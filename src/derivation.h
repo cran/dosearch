@@ -1,8 +1,8 @@
 #ifndef DERIVATION_H
 #define DERIVATION_H
 
-#include <string>
 #include <vector>
+#include <string>
 
 class derivation {
 public:
@@ -20,4 +20,4 @@ private:
     std::string get_label(const std::string& label);
 };
 
-#endif	/* DERIVATION_H */
+#endif /* DERIVATION_H */

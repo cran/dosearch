@@ -1,7 +1,5 @@
-#include <vector>
 #include <Rcpp.h>
 #include "formulasearch.h"
-#include "dcongraph.h"
 
 // [[Rcpp::plugins(cpp11)]]
 

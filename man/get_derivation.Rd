@@ -79,24 +79,9 @@ The \code{control} argument is a list that can supply any of the following compo
 
 } % END VALUE
 
-\references{
-
-Bareinboim E., Pearl J. 2014 Transportability from Multiple Environments with Limited Experiments: Completeness Results. In \emph{Proceedings of the 27th Annual Conference on Neural Information Processing Systems}, 280--288.
-
-Bareinboim E., Tian J. 2015 Recovering Causal Effects From Selection Bias. In \emph{Proceedings of the 29th AAAI Conference on Artificial Intelligence}, 3475--3481.
-
-Mohan K., Pearl J., Tian, J. 2013 Graphical Models for Inference with Missing Data. In \emph{Advances in Neural Information Systems}, \bold{26}, 1277--1285.
-
-Shpitser I., Pearl J. 2006 Identification of Joint Interventional Distributions in Recursive semi-Markovian Causal Models. In \emph{Proceedings of the 21st National Conference on Artificial Intelligence}, \bold{2}, 1219--1226. 
-
-Shpitser I., Pearl J. 2006 Identification of Conditional Interventional Distributions. In \emph{Proceedings of the 22nd Conference on Uncertainty in Artificial Intelligence}, 427--444. 
-
-} % END REFERENCES
-
 \author{Santtu Tikka}
 
 \examples{
-library(dosearch)
 
 # Multiple input distributions (both observational and interventional)
 

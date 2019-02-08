@@ -1,12 +1,4 @@
 #include "formulasearch.h"
-#include "set.h"
-#include "derivation.h"
-#include <iostream>
-#include <vector>
-#include <string>
-#include <queue>
-#include <Rcpp.h>
-#include <Rcpp/Benchmark/Timer.h>
 
 using namespace std;
 
@@ -63,6 +55,22 @@ void formulasearch::set_options(const vector<int>& r) {
 
 }
 
+void formulasearch::set_labels(const Rcpp::StringVector& lab) {
+    labels = vector<string>(2*n);
+    for ( int i = 0; i < n; i++ ) {
+        labels[i] = lab(i);
+        labels[n+i] = "I(" + lab(i) + ")";
+    }
+}
+
+void formulasearch::set_graph(dcongraph* g_) {
+    g = g_;
+}
+
+void formulasearch::set_derivation(derivation* d_) {
+    deriv = d_;
+}
+
 void formulasearch::add_known(const int& u, const int& c, const int& j, const int& e) {
     index++;
     p pp;
@@ -88,22 +96,6 @@ void formulasearch::add_known(const int& u, const int& c, const int& j, const in
     if ( md ) pool = (pool | u) | ((u & md_p) >> 2);
     else pool = pool | u;
     if ( verbose ) Rcpp::Rcout << "Adding known distribution: " << to_string(pp) << endl;
-}
-
-void formulasearch::set_labels(const Rcpp::StringVector& lab) {
-    labels = vector<string>(2*n);
-    for ( int i = 0; i < n; i++ ) {
-        labels[i] = lab(i);
-        labels[n+i] = "I(" + lab(i) + ")";
-    }
-}
-
-void formulasearch::set_graph(dcongraph* g_) {
-    g = g_;
-}
-
-void formulasearch::set_derivation(derivation* d_) {
-    deriv = d_;
 }
 
 // Heuristic for search order
@@ -227,7 +219,7 @@ Rcpp::List formulasearch::search_init() {
 
     if ( !trivial_id || derive_all ) {
         timer.step("start");
-        search_bfs();
+        search();
         timer.step("end");
     } else {
         timer.step("start");
@@ -285,7 +277,7 @@ Rcpp::List formulasearch::search_init() {
 
 }
 
-void formulasearch::search_bfs() {
+void formulasearch::search() {
 
     distr required;
     distr * iptr;
@@ -318,14 +310,14 @@ void formulasearch::search_bfs() {
 
             ruleid = rules[r];
 
-            if ( improve && !valid_do_rule(ruleid, u, c, j, primi) ) continue;
+            if ( improve && !valid_rule(ruleid, u, c, j, primi) ) continue;
 
             for ( unsigned int z_ind = 0; z_ind < z_sets.size(); z_ind++ ) {
 
                 required.primitive = TRUE;
                 z = z_sets[z_ind];
 
-                apply_do_rule(ruleid, u, c, j, e, z);
+                apply_rule(ruleid, u, c, j, e, z);
 
                 if ( !info.valid ) continue;
                 // rule_counts[r]++;
@@ -365,7 +357,7 @@ void formulasearch::search_bfs() {
                     nquery.rule_num = ruleid;
                     nquery.rule_name = info.rule_name;
 
-                    if ( ruleid == 6 || ruleid == -6 || ruleid == 7 || ruleid == -7 ) {
+                    if ( info.rp.u > 0 ) {
                         nquery.pa2 = required.index;
                     }
 
@@ -485,14 +477,23 @@ void formulasearch::draw(const distr& dist, const bool& recursive, derivation& d
 string formulasearch::dec_to_text(const int& dec, const int& enabled) const {
     if ( dec == 0 ) return("");
     string s = "";
-    int elems = set_size(dec);
-    int el = get_next_element(dec, 0);
-    if ( in_set(el, enabled) ) s += labels[el-1] + " = " + md_sym;
-    else s += labels[el-1];
-    for ( int i = 1; i < elems; i++ ) {
-        el = get_next_element(dec, el);
-        if ( in_set(el, enabled) ) s += "," + labels[el-1] + " = " + md_sym;
-        else s += "," + labels[el-1];
+    int first = 0;
+    for ( int i = 1; i <= n; i++ ) {
+        if ( in_set(i, dec) ) {
+            first = i;
+            if ( in_set(i, enabled) ) s += labels[i-1] + " = " + md_sym;
+            else s += labels[i-1];
+            break;
+        }
+    }
+    if ( first > 0) {
+        for ( int i = first + 1; i <= n; i++) {
+            if ( in_set(i, dec) ) {
+                s += ",";
+                if ( in_set(i, enabled) ) s += labels[i-1] + " = " + md_sym;
+                else s += labels[i-1];
+            }
+        }
     }
     return s;
 }
@@ -525,10 +526,10 @@ string formulasearch::to_string(const p& pp) const {
 }
 
 bool formulasearch::equal_p(const p& pp1, const p& pp2) const {
-    return ( (pp1.u == pp2.u) && (pp1.c == pp2.c) && (pp1.j == pp2.j) && (pp1.e == pp2.e) );
+    return (pp1.u == pp2.u) && (pp1.c == pp2.c) && (pp1.j == pp2.j) && (pp1.e == pp2.e);
 }
 
-bool formulasearch::valid_do_rule(const int &ruleid, const int &u, const int &c, const int &j, const bool &primi) const {
+bool formulasearch::valid_rule(const int &ruleid, const int &u, const int &c, const int &j, const bool &primi) const {
 
     switch ( ruleid ) {
 
@@ -600,7 +601,7 @@ bool formulasearch::valid_do_rule(const int &ruleid, const int &u, const int &c,
     return true;
 }
 
-void formulasearch::apply_do_rule(const int &ruleid, const int &u, const int &c, const int &j, const int &e, const int &z) {
+void formulasearch::apply_rule(const int &ruleid, const int &u, const int &c, const int &j, const int &e, const int &z) {
 
     int a, b, x, y, w, v, k;
     int d = 0;

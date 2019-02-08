@@ -6,6 +6,7 @@
 #include <string>
 #include <queue>
 #include <Rcpp.h>
+#include <Rcpp/Benchmark/Timer.h>
 #include "dcongraph.h"
 #include "derivation.h"
 
@@ -44,13 +45,12 @@ struct comp_distr {
 class formulasearch {
 public:
     formulasearch(const int& n, const bool& dd, const bool& da, const bool& dea, const bool& fa, const bool &imp, const char &ms, const bool &heur, const bool& repl, const bool& verb);
-    formulasearch(const formulasearch& orig);
-    void add_known(const int& u, const int& c, const int& j, const int& e);
     void set_target(const int& u, const int& c, const int& j, const int& e);
+    void set_options(const vector<int>& r);
     void set_labels(const Rcpp::StringVector& lab);
     void set_graph(dcongraph* g_);
     void set_derivation(derivation* d_);
-    void set_options(const vector<int>& r);
+    void add_known(const int& u, const int& c, const int& j, const int& e);
     Rcpp::List search_init();
     virtual ~formulasearch();
 private:
@@ -78,20 +78,19 @@ private:
     priority_queue<distr*, std::vector<distr*>, comp_distr> Q;
     unordered_map<std::string, int> ps;
     output info;
-    bool valid_do_rule(const int& ruleid, const int& u, const int& c, const int& j, const bool& primi) const;
-    void apply_do_rule(const int& ruleid, const int& u, const int& c, const int& j, const int& e, const int& z);
-    void get_ruleinfo(const int& ruleid, const int& y, const int& x, const int& z, const int& w, const int& d, const int& e);
-    string to_string(const p& pp) const;
-    string dec_to_text(const int& dec, const int& enabled) const;
-    void search_bfs();
-    bool is_primitive(const bool& pa1_primitive, const bool& pa2_primitive, const int& ruleid);
-    bool required_exists(distr &required);
-    bool equal_p(const p& p1, const p& p2) const;
-    void draw(const distr& dist, const bool& recursive, derivation& d);
-    void derive_formula(distr& dist);
+    void search();
     int compute_score(const p& pp) const;
     int compute_score_md(const p& pp) const;
-    int get_previous_vertices(const int &set) const;
+    bool required_exists(distr &required);
+    bool is_primitive(const bool& pa1_primitive, const bool& pa2_primitive, const int& ruleid);
+    void derive_formula(distr& dist);
+    void draw(const distr& dist, const bool& recursive, derivation& d);
+    string dec_to_text(const int& dec, const int& enabled) const;
+    string to_string(const p& pp) const;
+    bool equal_p(const p& p1, const p& p2) const;
+    bool valid_rule(const int& ruleid, const int& u, const int& c, const int& j, const bool& primi) const;
+    void apply_rule(const int& ruleid, const int& u, const int& c, const int& j, const int& e, const int& z);
+    void get_ruleinfo(const int& ruleid, const int& y, const int& x, const int& z, const int& w, const int& d, const int& e);
 };
 
 #endif	/* FORMULASEARCH_H */
