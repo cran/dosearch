@@ -1578,10 +1578,9 @@ A more complicated example is shown in Figure~\ref{fig:ccexample}(\subref{fig:fr
 \begin{equation}
 \begin{aligned}
 &  P(Y \given \doo(X)) = \\
-&\quad \sum_Z \bigg[ \frac{P(Y)P(X,Z \given R_X = 1, Y, R_Y = 1, R_Z = 1)}{\sum_{Y} P(Y)P(X,Z \given R_X = 1, Y, R_Y = 1,R_Z = 1)}\, \times \\
-&\qquad \sum_{X^\prime} \bigg( \sum_{R_Y,Y^*,R_Z,Z^*}  \frac{P(X^\prime,R_X = 1,R_Y,Y^*,R_Z,Z^*)}{P(R_X = 1 \given R_Y,Y^*,R_Z,Z^*)}\, \times \\
-&\quad\qquad \frac{P(Y)P(X^\prime,Z \given R_X = 1, Y, R_Y = 1,R_Z = 1)}{\sum_{Y^\prime} P(Y^\prime)P(X^\prime,Z \given R_X = 1,Y^\prime,R_Y = 1,R_Z = 1)}
-\bigg) \bigg].
+&\quad \sum_Z \left[ \frac{\sum_{Y^\prime} P(Y^\prime)P(X,Z \given Y^\prime,R_X = 1, R_Y = 1, R_Z = 1)}{\sum_{Z^\prime,Y^\prime} P(Y^\prime)P(X,Z^\prime \given Y^\prime,R_X = 1, R_Y = 1, R_Z = 1)}\, \right. \times \\
+&\qquad \sum_{X^\prime} \left( \sum_{Y^\prime,Z^\prime} P(Y^\prime)P(X^\prime,Z^\prime \given Y^\prime,R_X = 1, R_Y = 1, R_Z = 1)\, \right. \times \\
+&\quad\qquad \left. \left. \frac{P(Y)P(X^\prime,Z \given Y, R_X = 1, R_Y = 1,R_Z = 1)}{\sum_{Y^\prime} P(Y^\prime)P(X^\prime,Z \given Y^\prime,R_X = 1,R_Y = 1,R_Z = 1)} \vphantom{\sum_{Z^\prime}}\right) \right].
 \end{aligned}
 \label{eq:frontdoorcc}
 \end{equation}
@@ -1591,11 +1590,11 @@ Expression~\eref{eq:frontdoorcc} follows the general structure of the front-door
 \]
 where
 \begin{align*}
-  P(Z \given X) &= \frac{P(Y)P(X,Z \given R_X = 1, Y, R_Y = 1, R_Z = 1)}{\sum_{Y} P(Y)P(X,Z \given R_X = 1, Y, R_Y = 1,R_Z = 1)}, \\
-  P(X) &= \sum_{R_Y,Y^*,R_Z,Z^*} \frac{P(X,R_X = 1,R_Y,Y^*,R_Z,Z^*)}{P(R_X = 1 \given R_Y,Y^*,R_Z,Z^*)}, \\
-  P(Y \given X,Z) &= \frac{P(Y)P(X,Z \given R_X = 1,Y,R_Y = 1,R_Z = 1)}{\sum_{Y^\prime} P(Y^\prime)P(X,Z \given R_X = 1,Y^\prime,R_Y = 1,R_Z = 1)}.
+  P(Z \given X) &= \frac{\sum_{Y^\prime} P(Y^\prime)P(X,Z \given Y^\prime,R_X = 1, R_Y = 1, R_Z = 1)}{\sum_{Z^\prime,Y^\prime} P(Y^\prime)P(X,Z^\prime \given Y^\prime,R_X = 1, R_Y = 1, R_Z = 1)}, \\
+  P(X) &= \sum_{Y^\prime,Z^\prime} P(Y^\prime)P(X,Z^\prime \given Y^\prime,R_X = 1, R_Y = 1, R_Z = 1), \\
+  P(Y \given X,Z) &= \frac{P(Y)P(X,Z \given Y,R_X = 1,R_Y = 1,R_Z = 1)}{\sum_{Y^\prime} P(Y^\prime)P(X,Z \given Y^\prime,R_X = 1,R_Y = 1,R_Z = 1)}.
 \end{align*}
-In \citep{Karvanen2015studydesign}, a similar example was studied assuming that $X$, $Z$ and $Y$ are binary but in expression~\eref{eq:frontdoorcc} there are no such restrictions.
+Note that $P(X,Y,Z) = P(Y)P(X,Z \given Y,R_X = 1,R_Y = 1,R_Z = 1)$. In \citep{Karvanen2015studydesign}, a similar example was studied assuming that $X$, $Z$ and $Y$ are binary but in expression~\eref{eq:frontdoorcc} there are no such restrictions.
 
 \section{Discussion} \label{sect:discussion}
 

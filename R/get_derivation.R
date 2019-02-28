@@ -19,6 +19,7 @@
 # replace         : A logical value. If TRUE, distributions are replaced in the derivation if a simpler formula is found.
 # rules           : A numeric vector of do-calculus/probability rules used in the search.
 # verbose         : A logical value. If TRUE, various diagnostic information is printed to the console during the search.
+# warn            : A logical value. If TRUE, gives warnings on possibly mistyped/unwanted input data
 
 get_derivation <- function(
     data, query, graph, 
@@ -35,11 +36,22 @@ get_derivation <- function(
     if (is.null(control$benchmark)        || typeof(control$benchmark) != "logical"        || length(control$benchmark) > 1)        control$benchmark <- FALSE
     if (is.null(control$verbose)          || typeof(control$verbose) != "logical"          || length(control$verbose) > 1)          control$verbose <- FALSE
     if (is.null(control$md_sym)           || typeof(control$md_sym) != "character"         || length(control$verbose) > 1)          control$md_sym <- "1"
+    if (is.null(control$warn)             || typeof(control$warn) != "logical"             || length(control$warn) > 1)             control$warn <- TRUE
     # Default value for heuristic is set later after checking for missing data mechanisms
 
     to_dec <- function(set, n) {
         if ( is.null(set) ) return(0)
         return(sum(2^(0:(n-1))[set]))
+    }
+
+    to_vec <- function(dec, n) {
+        if ( n == 0 ) return(numeric())
+        b <- numeric(n)
+        for ( i in 1:n ) {
+            b[n - i + 1] <- (dec %% 2)
+            dec <- (dec %/% 2)
+        }
+        return(rev(b))
     }
 
     dir_lhs <- c()
@@ -225,6 +237,7 @@ get_derivation <- function(
     data_split <- data_split[which(nchar(data_split) > 0)]
     p_list <- list()
     p_process <- list()
+    var_pool <- c()
     for ( i in 1:length(data_split) ) {
         parts <- NULL
         p_split <- list(NULL, NULL, NULL)
@@ -288,6 +301,17 @@ get_derivation <- function(
             names(nums) <- vars
         }
         p_process[[i]] <- list(nums[p_split[[1]]], nums[p_split[[2]]], nums[p_split[[3]]], nums[enabled], data_split[[i]])
+        var_pool <- union(var_pool, p_split[[1]])
+    }
+
+    if ( control$warn ) {
+        var_dec <- to_dec(nums[var_pool], n)
+        if ( !is.null(missing_data) ) {
+            if ( (inc_md <- bitwAnd(md_s, var_dec)) != md_s ) {
+                no_ind <- vars[which(to_vec(bitwAnd(md_s, bitwNot(inc_md)), n) == 1)]
+                warning(paste0(c("There are response indicators that are not present in any input distribution: ", paste(no_ind, collapse = ", "))))
+            }
+        }
     }
 
     for ( i in 1:length(p_process) ) {

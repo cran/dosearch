@@ -52,12 +52,12 @@ The use of multiple do-operators is not permitted. Furthermore, when both condit
 
 \code{selection_bias} enumerates the nodes that should be understood as selection bias nodes responsible for bias in the input data sets. Individual variables should be separated by a comma. See e.g., Bareinboim and Pearl (2014) for details on selection bias recoverability.
 
-\code{missing_data} enumerates the missingness mechanisms of the model. The syntax for a single mechanism is \code{M_X : X} where \ifelse{html}{\out{M<sub>X</sub>}}{\eqn{M_X}} is the mechanism for \eqn{X}. Individual mechanisms should be separated by a comma. Note that both \ifelse{html}{\out{M<sub>X</sub>}}{\eqn{M_X}} and \eqn{X} must be present in the graph if the corresponding mechanism is given as input. Proxy variables should not be included in the graph, since they are automatically generated based on \code{missing_data}. See e.g., Mohan, Pearl and Tian (2013) for details on missing data as a causal inference problem.
+\code{missing_data} enumerates the missingness mechanisms of the model. The syntax for a single mechanism is \code{M_X : X} where \ifelse{html}{\out{M<sub>X</sub>}}{\eqn{M_X}} is the mechanism for \eqn{X}. Individual mechanisms should be separated by a comma. Note that both \ifelse{html}{\out{M<sub>X</sub>}}{\eqn{M_X}} and \eqn{X} must be present in the graph if the corresponding mechanism is given as input. Proxy variables should not be included in the graph, since they are automatically generated based on \code{missing_data}. By default, a warning is issued if a proxy variable is present in an input distribution but its corresponding mechanism is not present in any input. See e.g., Mohan, Pearl and Tian (2013) for details on missing data as a causal inference problem.
 
 The \code{control} argument is a list that can supply any of the following components:
 \describe{
   \item{\code{benchmark}}{A logical value. If \code{TRUE}, the search time is recorded and returned (in milliseconds). Defaults to \code{FALSE}. }
-  \item{\code{draw_derivation}}{A logical value. If \code{TRUE}, a string representing the derivation steps as a dot graph is returned. Defaults to \code{FALSE}. }
+  \item{\code{draw_derivation}}{A logical value. If \code{TRUE}, a string representing the derivation steps as a DOT graph is returned. The graph can be exported as an image for example by using \code{\link[DOT]{dot}}. Defaults to \code{FALSE}. }
   \item{\code{draw_all}}{A logical value. If \code{TRUE} and if \code{draw_derivation = TRUE}, the derivation will contain every step taken by the search. If \code{FALSE}, only steps that resulted in an identifiable target are returned. Defaults to \code{FALSE}. }
   \item{\code{formula}}{A logical value. If \code{TRUE}, a string representing the identifiable query is returned. If \code{FALSE}, only a logical value is returned that takes the value \code{TRUE} for an identifiable target and \code{FALSE} otherwise. Defaults to \code{TRUE}. }
   \item{\code{heuristic}}{A logical value. If \code{TRUE}, new distributions are expanded according to a search heuristic (see the vignette for details). Otherwise, distributions are expanded in the order in which they were identified. Defaults to \code{TRUE} unless missing data mechanisms are provided in \code{missing_data}. }
@@ -66,6 +66,7 @@ The \code{control} argument is a list that can supply any of the following compo
   \item{\code{replace}}{A logical value. If \code{TRUE}, the search will continue deriving new distributions after the target has been reached in order to possibly find a shorter search path. Defaults to \code{FALSE}. }
   \item{\code{rules}}{A numeric vector describing a subset of the search rules to be used. Must be a subset of \code{c(-1,-2,-3,1,2,3,4,5,-6,6,-7,7,8,9)} (see the vignette for details). }
   \item{\code{verbose}}{A logical value. If \code{TRUE}, diagnostic information is printed to the console during the search. Defaults to \code{FALSE}. }
+  \item{\code{warn}}{A logical value. If \code{TRUE}, a warning is issued for possibly unintentionally misspecified but syntactically correct input distributions. }
 }
 
 } % END DETAILS
@@ -74,7 +75,7 @@ The \code{control} argument is a list that can supply any of the following compo
 
 \describe{
   \item{\code{identifiable}}{A logical value that attains the value \code{TRUE} is the target quantity is identifiable and \code{FALSE} otherwise. }
-  \item{\code{formula}}{A character string describing an identifiable query or an empty character vector for an unidentifiable effect. }
+  \item{\code{formula}}{A character string describing a formula for an identifiable query or an empty character vector for an unidentifiable effect. }
 }
 
 } % END VALUE
@@ -146,12 +147,12 @@ graph3 <- "
   z_1 -- x
   z_1 -- z_2
   z_1 -- y
-  s_1 -> z_1
-  s_2 -> z_2
-  s_3 -> y
+  t_1 -> z_1
+  t_2 -> z_2
+  t_3 -> y
 "
 
-get_derivation(data3, query3, graph3, transportability = "s_1, s_2, s_3")
+get_derivation(data3, query3, graph3, transportability = "t_1, t_2, t_3")
 
 # Missing data
 
@@ -171,5 +172,14 @@ graph4 <- "
 "
 
 get_derivation(data4, query4, graph4, missing_data = "m_x : x, m_y : y, m_z : z")
+
+# Export the DOT diagram of the derivation as an SVG file
+# to the working directory via the DOT package
+# PostScript format is also supported
+
+\dontrun{
+d <- get_derivation(data1, query1, graph1, control = list(draw_derivation = TRUE))
+DOT::dot(d$derivation, "derivation.svg")
+}
 
 } % END EXAMPLES
