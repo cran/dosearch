@@ -49,7 +49,7 @@ private:
         bool hh[MAX_SIZE][MAX_SIZE];
         bool tt[MAX_SIZE][MAX_SIZE];
         bool th[MAX_SIZE][MAX_SIZE];
-        int c,j,m;
+        int c, j, m;
     };
     int tr, sb, md_s, md_p;
     void intervene(state& current, const int& el) const;
@@ -57,5 +57,5 @@ private:
     void marginalize(state& current, const int& el) const;
 };
 
-#endif /* DCONGRAPH_H */
+#endif
 

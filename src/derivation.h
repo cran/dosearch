@@ -20,4 +20,4 @@ private:
     std::string get_label(const std::string& label);
 };
 
-#endif /* DERIVATION_H */
+#endif

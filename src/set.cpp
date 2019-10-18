@@ -12,6 +12,10 @@ bool in_set(const int& x, const int& set) {
     return set & unary(x);
 }
 
+int set_union(const int& set1, const int& set2) {
+    return set1 | set2;
+}
+
 int full_set(const int& n) {
     return (1 << n) - 1;
 }
@@ -20,8 +24,8 @@ int unary(const int& x) {
     return 1 << (x - 1);
 }
 
-int set_union(const int& set1, const int& set2) {
-    return set1 | set2;
+bool is_subset(const int & subset, const int& set) {
+    return (set & subset) == subset;
 }
 
 std::vector<int> get_subsets(const int& n) {
