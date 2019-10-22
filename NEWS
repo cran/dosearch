@@ -1,3 +1,6 @@
+Changes from version 1.0.3 to 1.0.4
+ * Fixed compilation issues on some platforms.
+
 Changes from version 1.0.2 to 1.0.3
  * Now supports context specific independences (CSIs) via labeled directed acyclic graphs (LDAGs). See the documentation and examples for more details.
  * The function 'get_derivation' can now also be called via 'dosearch'.

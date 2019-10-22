@@ -1,7 +1,7 @@
 Package: dosearch
 Type: Package
-Version: 1.0.3
-Date: 2019-10-18
+Version: 1.0.4
+Date: 2019-10-22
 Title: Causal Effect Identification from Multiple Incomplete Data
         Sources
 Authors@R: c(
@@ -37,6 +37,6 @@ Author: Santtu Tikka [aut, cre] (<https://orcid.org/0000-0003-4039-4342>),
   Juha Karvanen [ctb] (<https://orcid.org/0000-0001-5530-769X>)
 Maintainer: Santtu Tikka <santtuth@gmail.com>
 Suggests: DOT
-Packaged: 2019-10-18 15:37:58 UTC; Santtu
+Packaged: 2019-10-22 07:47:02 UTC; santikka
 Repository: CRAN
-Date/Publication: 2019-10-18 21:20:09 UTC
+Date/Publication: 2019-10-22 11:20:11 UTC
