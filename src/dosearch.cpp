@@ -94,7 +94,9 @@ distr& dosearch::next_distribution(const int& i) {
 }
 
 void dosearch::derive_distribution(const distr& iquery, const distr& required, const int& ruleid, int& remaining, bool& found) {
+    index++;
     distr nquery;
+    nquery.index = index;
     nquery.pp = info.to;
     nquery.primitive = is_primitive(iquery.primitive, required.primitive, ruleid);
     nquery.pa1 = iquery.index;
@@ -119,9 +121,7 @@ void dosearch::derive_distribution(const distr& iquery, const distr& required, c
             if ( info.rp.a > 0 ) Rcpp::Rcout << "Derived: " << to_string(info.to) << " from " << to_string(info.from) << " and " << to_string(info.rp) << " using rule: " << std::to_string(ruleid) << endl;
             else Rcpp::Rcout << "Derived: " << to_string(info.to) << " from " << to_string(info.from) << " using rule: " << std::to_string(ruleid) << endl;
         }
-        index++;
         remaining++;
-        nquery.index = index;
         add_distribution(nquery);
     }
 }
@@ -196,12 +196,12 @@ string dosearch::derive_formula(distr& dist) {
             if ( dist.primitive ) formula = to_string(dist.pp);
             else {
                 if ( rsq == 36 ) {
-                    if ( paf1.length() < paf2.length() ) formula = paf1 + "*" + paf2;
-                    else formula = paf2 + "*" + paf1;
+                    if ( paf1.length() < paf2.length() ) formula = "\\left(" + paf1 + paf2 + "\\right)";
+                    else formula = "\\left(" + paf2 + paf1 + "\\right)";
                 } else if ( rsq == 49 ) {
-                    formula = "[[" + paf1 + "]/[" + paf2 + "]]";
+                    formula = "\\frac{" + paf1 + "}{" + paf2 + "}";
                 } else if ( rsq == 64 ) {
-                    formula = "[[" + paf2 + "]/[" + paf1 + "]]";
+                    formula = "\\frac{" + paf2 + "}{" + paf1 + "}";
                 }
             }
         } else {
@@ -211,9 +211,9 @@ string dosearch::derive_formula(distr& dist) {
                 if ( dist.primitive ) formula = to_string(dist.pp);
                 else {
                     if ( rsq == 25 ) {
-                        formula = "[[" + paf1 + "]/[sum_{" + dec_to_text(dist.pp.a, 0) + "} " + paf1 + "]]";
+                        formula = "\\frac{" + paf1 + "}{\\sum_{" + dec_to_text(dist.pp.a, 0) + "} " + paf1 + "}";
                     } else if ( rsq == 16 ) {
-                        formula =  "[sum_{" + dec_to_text(pa1.pp.a - dist.pp.a, 0) + "} [" + paf1 + "]]";
+                        formula =  "\\sum_{" + dec_to_text(pa1.pp.a - dist.pp.a, 0) + "}" + paf1;
                     } else if ( rsq >= 81 ) {
                         formula = paf1;
                     }
