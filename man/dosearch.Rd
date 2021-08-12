@@ -58,7 +58,7 @@ The intervention nodes \eqn{I_X} and \eqn{I_Z} must be explicitly defined in the
 +  X <-> Y
 +"
 }
-Some alternative formats for DAGs are supported as well. Graphs created using the igraph package in the \code{\link[causaleffect]{causal.effect}} syntax can be used here. Similarly, DAGs created using \code{\link[dagitty]{dagitty}} are supported.
+Some alternative formats for DAGs are supported as well. Graphs created using the \code{igraph} package in the \code{causal.effect} syntax can be used here. Similarly, DAGs created using \code{dagitty} are supported.
 
 LDAGs are constructed similarly with the addition of labels and with the omission bidirected edges (latent variables must be explicitly defined). As an example, an LDAG with two labeled edges can be constructed as follows:
 \preformatted{
@@ -80,12 +80,13 @@ Here the labels indicate that the edge from \eqn{X} to \eqn{Z} vanishes when \eq
 The \code{control} argument is a list that can supply any of the following components:
 \describe{
   \item{\code{benchmark}}{A logical value. If \code{TRUE}, the search time is recorded and returned (in milliseconds). Defaults to \code{FALSE}. }
-  \item{\code{draw_derivation}}{A logical value. If \code{TRUE}, a string representing the derivation steps as a DOT graph is returned. The graph can be exported as an image for example by using \code{\link[DOT]{dot}}. Defaults to \code{FALSE}. }
+  \item{\code{benchmark_rules}}{A logical value. If \code{TRUE}, the time taken by each individual inference rule is also recorded in the benchmark (in milliseconds). Defaults to \code{FALSE}. }
+  \item{\code{draw_derivation}}{A logical value. If \code{TRUE}, a string representing the derivation steps as a DOT graph is returned. The graph can be exported as an image for example by using the \code{DOT} package. Defaults to \code{FALSE}. }
   \item{\code{draw_all}}{A logical value. If \code{TRUE} and if \code{draw_derivation = TRUE}, the derivation will contain every step taken by the search. If \code{FALSE}, only steps that resulted in an identifiable target are returned. Defaults to \code{FALSE}. }
   \item{\code{formula}}{A logical value. If \code{TRUE}, a string representing the identifiable query is returned when the target query is identifiable. If \code{FALSE}, only a logical value is returned that takes the value \code{TRUE} for an identifiable target and \code{FALSE} otherwise. Defaults to \code{TRUE}. }
-  \item{\code{heuristic}}{A logical value. If \code{TRUE}, new distributions are expanded according to a search heuristic (see Tikka et al. (2019) for details). Otherwise, distributions are expanded in the order in which they were identified. Defaults to \code{TRUE} unless missing data mechanisms are provided in \code{missing_data}. }
+  \item{\code{heuristic}}{A logical value. If \code{TRUE}, new distributions are expanded according to a search heuristic (see Tikka et al. (2019) for details). Otherwise, distributions are expanded in the order in which they were identified. Defaults to \code{FALSE}. }
   \item{\code{md_sym}}{A single character describing the symbol to use for active missing data mechanisms. Defaults to \code{"1"}. }
-  \item{\code{time_limit}}{A numeric value giving a time limit for the search (in hours) when \code{benchmark} is enabled. The default value is \code{0.5}. }
+  \item{\code{time_limit}}{A numeric value giving a time limit for the search (in hours). Defaults to a negative value that disables the limit. }
   \item{\code{verbose}}{A logical value. If \code{TRUE}, diagnostic information is printed to the console during the search. Defaults to \code{FALSE}. }
   \item{\code{warn}}{A logical value. If \code{TRUE}, a warning is issued for possibly unintentionally misspecified but syntactically correct input distributions. }
 }
@@ -125,14 +126,14 @@ graph2 <- "
 dosearch(data2, query2, graph2)
 
 ## Graph input using 'igraph' in the 'causaleffect' syntax
-if (requireNamespace("igraph")) {
+if (requireNamespace("igraph", quietly = TRUE)) {
   g_igraph <- igraph::graph.formula(x -+ z, z -+ y, x -+ y, y -+ x)
   g_igraph <- igraph::set.edge.attribute(g_igraph, "description", 3:4, "U")
   dosearch(data2, query2, g_igraph)
 }
 
 ## Graph input with 'dagitty'
-if (requireNamespace("dagitty")) {
+if (requireNamespace("dagitty", quietly = TRUE)) {
   g_dagitty <- dagitty::dagitty("dag{x -> z -> y; x <-> y}")
   dosearch(data2, query2, g_dagitty)
 }
@@ -268,8 +269,9 @@ dosearch(data8, query8, graph8)
 ## to the working directory via the DOT package.
 ## By default, only the identifying part is plotted.
 ## PostScript format is also supported.
-if (requireNamespace("DOT")) {
-  d <- get_derivation(data1, query1, graph1, control = list(draw_derivation = TRUE))
+if (requireNamespace("DOT", quietly = TRUE)) {
+  d <- get_derivation(data1, query1, graph1, 
+                      control = list(draw_derivation = TRUE))
   DOT::dot(d$derivation, "derivation.svg")
 }
 
