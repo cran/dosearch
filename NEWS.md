@@ -1,3 +1,7 @@
+# dosearch 1.0.11
+
+  * Fixed a memory allocation issue with LDAGs.
+
 # dosearch 1.0.10
 
   * Added support for user-defined context-specific variables for LDAGs via `con_vars` in `control`.

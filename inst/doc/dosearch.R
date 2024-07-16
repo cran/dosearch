@@ -7,7 +7,7 @@ library("igraph")
 library("dagitty")
 
 ## ----setup--------------------------------------------------------------------
-library(dosearch)
+library("dosearch")
 
 ## ----eval = FALSE-------------------------------------------------------------
 #  dosearch(

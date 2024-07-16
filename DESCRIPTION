@@ -1,8 +1,7 @@
 Package: dosearch
-Type: Package
 Title: Causal Effect Identification from Multiple Incomplete Data
         Sources
-Version: 1.0.10
+Version: 1.0.11
 Authors@R: c(
     person(given = "Santtu",
            family = "Tikka",
@@ -45,10 +44,10 @@ NeedsCompilation: yes
 RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 LazyData: true
-Maintainer: Santtu Tikka <santtuth@gmail.com>
-Packaged: 2024-07-09 17:38:43 UTC; Santtu
+Packaged: 2024-07-16 06:53:32 UTC; Santtu
 Author: Santtu Tikka [aut, cre] (<https://orcid.org/0000-0003-4039-4342>),
   Antti Hyttinen [ctb] (<https://orcid.org/0000-0002-6649-3229>),
   Juha Karvanen [ctb] (<https://orcid.org/0000-0001-5530-769X>)
+Maintainer: Santtu Tikka <santtuth@gmail.com>
 Repository: CRAN
-Date/Publication: 2024-07-09 21:40:07 UTC
+Date/Publication: 2024-07-16 09:50:02 UTC
