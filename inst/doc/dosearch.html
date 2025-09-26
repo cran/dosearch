@@ -602,7 +602,7 @@ confounded between <span class="math inline">\(X\)</span> and <span class="math 
 Karvanen 2017</a>)</span> or DAGs created using the <code>dagitty</code>
 package.</p>
 <pre class="r"><code>library(&quot;igraph&quot;)
-graph &lt;- graph.formula(X -+ Y, Z -+ X, Z -+ Y, X -+ Y, Y -+ X)
+graph &lt;- graph_from_literal(X -+ Y, Z -+ X, Z -+ Y, X -+ Y, Y -+ X)
 graph &lt;- set_edge_attr(graph, &quot;description&quot;, 4:5, &quot;U&quot;)</code></pre>
 <pre class="r"><code>library(&quot;dagitty&quot;)
 graph &lt;- dagitty(&quot;dag{X -&gt; Y; Z -&gt; X; Z -&gt; Y; X &lt;-&gt; Y}&quot;)</code></pre>

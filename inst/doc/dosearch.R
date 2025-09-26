@@ -10,11 +10,11 @@ library("dagitty")
 library("dosearch")
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  dosearch(
-#    data, query, graph,
-#    transportability = NULL, selection_bias = NULL, missing_data = NULL,
-#    control = list()
-#  )
+# dosearch(
+#   data, query, graph,
+#   transportability = NULL, selection_bias = NULL, missing_data = NULL,
+#   control = list()
+# )
 
 ## -----------------------------------------------------------------------------
 data <- "
@@ -53,7 +53,7 @@ graph <- "
 
 ## -----------------------------------------------------------------------------
 library("igraph")
-graph <- graph.formula(X -+ Y, Z -+ X, Z -+ Y, X -+ Y, Y -+ X)
+graph <- graph_from_literal(X -+ Y, Z -+ X, Z -+ Y, X -+ Y, Y -+ X)
 graph <- set_edge_attr(graph, "description", 4:5, "U")
 
 ## -----------------------------------------------------------------------------

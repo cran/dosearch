@@ -96,6 +96,7 @@ a non-identifiable effect.
 \code{plot} returns a \code{htmlwidget} object or \code{NULL} (invisibly)
 
 \code{print} returns \code{x} invisibly.
+with an additional argument limiting the output length.
 
 \code{is_identifiable} returns a logical value. If \code{TRUE}, the target
 distribution was identifiable from the available inputs.
@@ -337,7 +338,7 @@ dosearch(data, query, graph, missing_data = md)
 
 # Graph input using 'igraph' in the 'causaleffect' syntax
 if (requireNamespace("igraph", quietly = TRUE)) {
-  g_igraph <- igraph::graph.formula(
+  g_igraph <- igraph::graph_from_literal(
     x -+ z, z -+ y, x -+ y, y -+ x,
     simplify = FALSE
   )
